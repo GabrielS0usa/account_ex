@@ -3,7 +3,8 @@ package application;
 import java.util.Locale;
 import java.util.Scanner;
 
-import entities.Account;
+import model.entities.Account;
+import model.exception.ValueError;
 
 public class Program {
 
@@ -11,46 +12,33 @@ public class Program {
 
 		Locale.setDefault(Locale.US);
 		Scanner sc = new Scanner(System.in);
-		Account account;
 
-		System.out.print("Enter account number: ");
-		int number = sc.nextInt();
-		System.out.print("Enter account holder: ");
-		sc.nextLine();
-		String holder = sc.nextLine();
-		System.out.print("Is there an initial deposit (y/n)? ");
-		char response = sc.next().charAt(0);
-		if (response == 'y') {
-			System.out.print("Enter initial deposit value: ");
-			double initialDeposit = sc.nextDouble();
-			account = new Account(number, holder, initialDeposit);
+		try {
+			System.out.println("Enter account data");
+			System.out.print("Number: ");
+			int number = sc.nextInt();
+			System.out.print("Holder: ");
+			sc.nextLine();
+			String holder = sc.nextLine();
+			System.out.print("Initial balance: ");
+			double balence = sc.nextDouble();
+			System.out.print("withdrawLimit: ");
+			double withdrawLimit = sc.nextDouble();
+
+			Account acc = new Account(number, holder, balence, withdrawLimit);
+
+			System.out.print("Enter amount for withdraw: ");
+			double amount = sc.nextDouble();
+
+			acc.withdraw(amount);
+			System.out.println();
+			System.out.println(acc.toString());
+
+			sc.close();
+		} catch (ValueError e) {
+			System.out.println("Withdraw error: " + e.getMessage());
+		} catch (RuntimeException e) {
+			System.out.println("Unexpected error");
 		}
-		else {
-			account = new Account(number, holder);
-		}
-		
-		System.out.println();
-		System.out.println("Account data:");
-		account.imprimirObjeto();
-		
-		System.out.println();
-		System.out.print("Enter a deposit value: ");
-		double depositValue = sc.nextDouble();
-		account.deposit(depositValue);
-		
-		System.out.println();
-		System.out.println("Updated account data:");
-		System.out.println(account);
-		
-		System.out.println();
-		System.out.print("Enter a withdraw value: ");
-		double withdrawValue = sc.nextDouble();
-		account.withdraw(withdrawValue);
-		
-		System.out.println();
-		System.out.println("Updated account data:");
-		System.out.println(account);
-		
-		sc.close();
 	}
 }
